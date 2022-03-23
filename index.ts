@@ -45,10 +45,11 @@ export class Fivaldi {
   request = async (config: {
     method: Method,
     body?: any,
-    uri?: string
+    uri?: string,
+    query?: string
   }): Promise<any> => {
     const baseUrl = "https://api.fivaldi.net"
-    const { body, method, uri } = config;
+    const { body, method, uri, query } = config;
     let bodyMD5 = ""
     let contentType = ""
     const timestamp: string = Math.floor(new Date().getTime() / 1000).toString();
@@ -63,30 +64,36 @@ export class Fivaldi {
         headers.push({ key: "Content-Type", value: contentType })
     }
 
+    let stringToSign: string = [
+      method || "GET",
+      bodyMD5,
+      contentType,
+      ...headers.sort(function (a, b) {
+        return a.key.toLowerCase().localeCompare(b.key.toLowerCase())
+      }).filter(header => header.key.startsWith("X-Fivaldi"))
+      .map(header => `${header.key.trim().toLowerCase()}:${typeof header.value === "string" ? header.value.trim() : header.value}`),
+      uri
+    ].join(LF);
+
+    if(query){
+      stringToSign += LF + query;
+    }
+
     const mac = hmac(
-      [
-        method || "GET",
-        bodyMD5,
-        contentType,
-        ...headers.sort(function (a, b) {
-          return a.key.toLowerCase().localeCompare(b.key.toLowerCase())
-        }).filter(header => header.key.startsWith("X-Fivaldi"))
-        .map(header => `${header.key.trim().toLowerCase()}:${typeof header.value === "string" ? header.value.trim() : header.value}`),
-        uri
-      ].join(LF), 
+      stringToSign, 
       this.clientSecret
-    )
+    );
 
     headers.push({ key: "Authorization", value: `Fivaldi ${mac}`})
     return await axios({
       method,
-      url: baseUrl + uri,
+      url: baseUrl + uri + query,
       headers: headers.reduce((result, header) => {
         result[header.key] = header.value;
         return result;
       }, {}),
       data: body
-    })
+    });
   }
 
   async createInvoice(body: any): Promise<any> {
@@ -102,7 +109,7 @@ export class Fivaldi {
       body, 
       method: "POST",
       uri: `/customer/api/companies/${this.clientIdentifier}/sales/multiple-sales-orders`
-    })
+    });
   }
 
   async getCustomerDetails(customerId: string): Promise<any> {
@@ -116,6 +123,6 @@ export class Fivaldi {
     return await this.request({
       method: "GET",
       uri: `/customer/api/companies/${this.clientIdentifier}/sales/company-invoicing-details`
-    })
+    });
   }
 }
