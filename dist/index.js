@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -29,7 +20,7 @@ const hmac = (content, clientSecret) => {
 };
 class Fivaldi {
     constructor(clientIdentifier, clientSecret, fivaldiPartner) {
-        this.request = (config) => __awaiter(this, void 0, void 0, function* () {
+        this.request = async (config) => {
             const baseUrl = "https://api.fivaldi.net";
             const { body, method, uri } = config;
             let bodyMD5 = "";
@@ -55,7 +46,7 @@ class Fivaldi {
                 uri
             ].join(LF), this.clientSecret);
             headers.push({ key: "Authorization", value: `Fivaldi ${mac}` });
-            return yield (0, axios_1.default)({
+            return await (0, axios_1.default)({
                 method,
                 url: baseUrl + uri,
                 headers: headers.reduce((result, header) => {
@@ -64,35 +55,29 @@ class Fivaldi {
                 }, {}),
                 data: bodyMD5
             });
-        });
+        };
         this.clientIdentifier = clientIdentifier;
         this.clientSecret = clientSecret;
         this.fivaldiPartner = fivaldiPartner;
     }
-    createInvoice(body) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.request({
-                body,
-                method: "POST",
-                uri: `/customer/api/companies/${this.clientIdentifier}/sales/sales-order`
-            });
+    async createInvoice(body) {
+        return await this.request({
+            body,
+            method: "POST",
+            uri: `/customer/api/companies/${this.clientIdentifier}/sales/sales-order`
         });
     }
-    createMultipleInvoices(body) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.request({
-                body,
-                method: "POST",
-                uri: `/customer/api/companies/${this.clientIdentifier}/sales/multiple-sales-orders`
-            });
+    async createMultipleInvoices(body) {
+        return await this.request({
+            body,
+            method: "POST",
+            uri: `/customer/api/companies/${this.clientIdentifier}/sales/multiple-sales-orders`
         });
     }
-    getCustomerDetails(customerId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.request({
-                method: "GET",
-                uri: `/customer/api/companies/${this.clientIdentifier}/customers/${customerId}`
-            });
+    async getCustomerDetails(customerId) {
+        return await this.request({
+            method: "GET",
+            uri: `/customer/api/companies/${this.clientIdentifier}/customers/${customerId}`
         });
     }
 }
