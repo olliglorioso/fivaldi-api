@@ -62,7 +62,7 @@ class Fivaldi {
                     result[header.key] = header.value;
                     return result;
                 }, {}),
-                data: bodyMD5
+                data: body
             });
         });
         this.clientIdentifier = clientIdentifier;
