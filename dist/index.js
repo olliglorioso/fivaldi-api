@@ -19,7 +19,7 @@ const md5 = (body) => {
     if (typeof body === "object" && !(body instanceof Buffer)) {
         body = JSON.stringify(body);
     }
-    return crypto_1.default.createHash("md5").update(body).digest("base64");
+    return crypto_1.default.createHash("md5").update(body).digest("hex");
 };
 const hmac = (content, clientSecret) => {
     return crypto_1.default
@@ -92,6 +92,14 @@ class Fivaldi {
             return yield this.request({
                 method: "GET",
                 uri: `/customer/api/companies/${this.clientIdentifier}/customers/${customerId}`
+            });
+        });
+    }
+    getCompanyInvoicingDetails() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.request({
+                method: "GET",
+                uri: `/customer/api/companies/${this.clientIdentifier}/sales/company-invoicing-details`
             });
         });
     }
