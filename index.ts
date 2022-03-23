@@ -50,14 +50,15 @@ export class Fivaldi {
   }): Promise<any> => {
     try {
       const baseUrl = "https://api.fivaldi.net"
-      const { body, method, uri, query } = config;
+      const { body, method, uri } = config;
       let bodyMD5 = ""
       let contentType = ""
+      const query = config.query || ""
       const timestamp: string = Math.floor(new Date().getTime() / 1000).toString();
       let headers = [
           { key: "X-Fivaldi-Partner", value: this.fivaldiPartner},
           { key: "X-Fivaldi-Timestamp", value: timestamp },
-      ]
+      ]   
     
       if (body) {
           bodyMD5 = md5(body)
@@ -88,7 +89,7 @@ export class Fivaldi {
       headers.push({ key: "Authorization", value: `Fivaldi ${mac}`})
       const axiosResponse =  await axios({
         method,
-        url: baseUrl + uri + (query ? query : ""),
+        url: baseUrl + uri + query,
         headers: headers.reduce((result, header) => {
           result[header.key] = header.value;
           return result;

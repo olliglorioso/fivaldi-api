@@ -44,44 +44,51 @@ exports.getClient = getClient;
 class Fivaldi {
     constructor(clientIdentifier, clientSecret, fivaldiPartner) {
         this.request = (config) => __awaiter(this, void 0, void 0, function* () {
-            const baseUrl = "https://api.fivaldi.net";
-            const { body, method, uri, query } = config;
-            let bodyMD5 = "";
-            let contentType = "";
-            const timestamp = Math.floor(new Date().getTime() / 1000).toString();
-            let headers = [
-                { key: "X-Fivaldi-Partner", value: this.fivaldiPartner },
-                { key: "X-Fivaldi-Timestamp", value: timestamp },
-            ];
-            if (body) {
-                bodyMD5 = md5(body);
-                contentType = "application/json";
-                headers.push({ key: "Content-Type", value: contentType });
+            try {
+                const baseUrl = "https://api.fivaldi.net";
+                const { body, method, uri } = config;
+                let bodyMD5 = "";
+                let contentType = "";
+                const query = config.query || "";
+                const timestamp = Math.floor(new Date().getTime() / 1000).toString();
+                let headers = [
+                    { key: "X-Fivaldi-Partner", value: this.fivaldiPartner },
+                    { key: "X-Fivaldi-Timestamp", value: timestamp },
+                ];
+                if (body) {
+                    bodyMD5 = md5(body);
+                    contentType = "application/json";
+                    headers.push({ key: "Content-Type", value: contentType });
+                }
+                let stringToSign = [
+                    method || "GET",
+                    bodyMD5,
+                    contentType,
+                    ...headers.sort(function (a, b) {
+                        return a.key.toLowerCase().localeCompare(b.key.toLowerCase());
+                    }).filter(header => header.key.startsWith("X-Fivaldi"))
+                        .map(header => `${header.key.trim().toLowerCase()}:${typeof header.value === "string" ? header.value.trim() : header.value}`),
+                    uri
+                ].join(LF);
+                if (query) {
+                    stringToSign += LF + query;
+                }
+                const mac = hmac(stringToSign, this.clientSecret);
+                headers.push({ key: "Authorization", value: `Fivaldi ${mac}` });
+                const axiosResponse = yield (0, axios_1.default)({
+                    method,
+                    url: baseUrl + uri + query,
+                    headers: headers.reduce((result, header) => {
+                        result[header.key] = header.value;
+                        return result;
+                    }, {}),
+                    data: body
+                });
+                return axiosResponse.data;
             }
-            let stringToSign = [
-                method || "GET",
-                bodyMD5,
-                contentType,
-                ...headers.sort(function (a, b) {
-                    return a.key.toLowerCase().localeCompare(b.key.toLowerCase());
-                }).filter(header => header.key.startsWith("X-Fivaldi"))
-                    .map(header => `${header.key.trim().toLowerCase()}:${typeof header.value === "string" ? header.value.trim() : header.value}`),
-                uri
-            ].join(LF);
-            if (query) {
-                stringToSign += LF + query;
+            catch (error) {
+                throw Error(error.response.data.message || error.response.statusText || "An error occured.");
             }
-            const mac = hmac(stringToSign, this.clientSecret);
-            headers.push({ key: "Authorization", value: `Fivaldi ${mac}` });
-            return yield (0, axios_1.default)({
-                method,
-                url: baseUrl + uri + query,
-                headers: headers.reduce((result, header) => {
-                    result[header.key] = header.value;
-                    return result;
-                }, {}),
-                data: body
-            });
         });
         this.clientIdentifier = clientIdentifier;
         this.clientSecret = clientSecret;
