@@ -94,6 +94,11 @@ class Fivaldi {
         this.clientSecret = clientSecret;
         this.fivaldiPartner = fivaldiPartner;
     }
+    /**
+     * @param body
+     * @description Create a signle new invoice.
+     * @example Fivaldi.createInvoice(body)
+     */
     createInvoice(body) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.request({
@@ -103,6 +108,11 @@ class Fivaldi {
             });
         });
     }
+    /**
+     * @param body
+     * @description Create multiple new invoices.
+     * @example Fivaldi.createInvoices(body)
+     */
     createMultipleInvoices(body) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.request({
@@ -112,6 +122,12 @@ class Fivaldi {
             });
         });
     }
+    /**
+     *
+     * @param customerId
+     * @description Get details of a single customer.
+     * @example Fivaldi.getCustomer(customerId)
+     */
     getCustomerDetails(customerId) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.request({
@@ -120,6 +136,10 @@ class Fivaldi {
             });
         });
     }
+    /**
+     * @description Get company's invoicing details and default values for different params.
+     * @example Fivaldi.getCompanyDetails()
+     */
     getCompanyInvoicingDetails() {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.request({
