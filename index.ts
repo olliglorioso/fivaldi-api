@@ -7,7 +7,7 @@ const md5 = (body: any): string => {
   if (typeof body === "object" && !(body instanceof Buffer)) {
     body = JSON.stringify(body)
   }
-  return crypto.createHash("md5").update(body).digest("base64")
+  return crypto.createHash("md5").update(body).digest("hex")
 }
 
 const hmac = (content: string, clientSecret: string): string => {
@@ -18,11 +18,9 @@ const hmac = (content: string, clientSecret: string): string => {
 }
 
 export default class Fivaldi {
-  baseUrl: string;
   clientIdentifier: string;
   clientSecret: string;
   fivaldiPartner: string;
-  companyId: string;
 
   constructor(clientIdentifier: string, clientSecret: string, fivaldiPartner: string){
     this.clientIdentifier = clientIdentifier;
@@ -73,11 +71,11 @@ export default class Fivaldi {
         result[header.key] = header.value;
         return result;
       }, {}),
-      data: bodyMD5
+      data: body
     })
   }
 
-  async createInvoice(body: any): Promise<void> {
+  async createInvoice(body: any): Promise<any> {
     return await this.request({
       body,
       method: "POST",
@@ -85,7 +83,7 @@ export default class Fivaldi {
     });
   }
 
-  async createMultipleInvoices(body: any): Promise<void> {
+  async createMultipleInvoices(body: any): Promise<any> {
     return await this.request({
       body, 
       method: "POST",
@@ -93,10 +91,17 @@ export default class Fivaldi {
     })
   }
 
-  async getCustomerDetails(customerId: string): Promise<void> {
+  async getCustomerDetails(customerId: string): Promise<any> {
     return await this.request({
       method: "GET",
       uri: `/customer/api/companies/${this.clientIdentifier}/customers/${customerId}`
     });
+  }
+
+  async getCompanyInvoicingDetails(): Promise<any> {
+    return await this.request({
+      method: "GET",
+      uri: `/customer/api/companies/${this.clientIdentifier}/sales/company-invoicing-details`
+    })
   }
 }
