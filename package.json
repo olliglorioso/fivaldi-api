@@ -2,7 +2,7 @@
   "name": "fivaldi-api",
   "version": "1.0.0",
   "description": "With this marvellous library you can connect easily to Visma Fivaldi API.",
-  "main": "dist/index.ts",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "/dist"
