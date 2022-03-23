@@ -17,7 +17,21 @@ const hmac = (content: string, clientSecret: string): string => {
     .digest("base64")
 }
 
-export default class Fivaldi {
+let _client: Fivaldi;
+
+export const configure = (clientIdentifier: string, clientSecret: string, fivaldiPartner: string): Fivaldi => {
+  _client = new Fivaldi(clientIdentifier, clientSecret, fivaldiPartner)
+  return _client
+}
+
+export const getClient = (): Fivaldi => {
+  if(!_client){
+    throw new Error("You must configure the module before accessing the client")
+  }
+  return _client
+}
+
+export class Fivaldi {
   clientIdentifier: string;
   clientSecret: string;
   fivaldiPartner: string;

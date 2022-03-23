@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Fivaldi = exports.getClient = exports.configure = void 0;
 const axios_1 = __importDefault(require("axios"));
 const crypto_1 = __importDefault(require("crypto"));
 const LF = '\u000a';
@@ -27,6 +28,19 @@ const hmac = (content, clientSecret) => {
         .update(content)
         .digest("base64");
 };
+let _client;
+const configure = (clientIdentifier, clientSecret, fivaldiPartner) => {
+    _client = new Fivaldi(clientIdentifier, clientSecret, fivaldiPartner);
+    return _client;
+};
+exports.configure = configure;
+const getClient = () => {
+    if (!_client) {
+        throw new Error("You must configure the module before accessing the client");
+    }
+    return _client;
+};
+exports.getClient = getClient;
 class Fivaldi {
     constructor(clientIdentifier, clientSecret, fivaldiPartner) {
         this.request = (config) => __awaiter(this, void 0, void 0, function* () {
@@ -104,5 +118,5 @@ class Fivaldi {
         });
     }
 }
-exports.default = Fivaldi;
+exports.Fivaldi = Fivaldi;
 //# sourceMappingURL=index.js.map

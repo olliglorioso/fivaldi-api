@@ -1,5 +1,7 @@
 import { Method } from "axios";
-export default class Fivaldi {
+export declare const configure: (clientIdentifier: string, clientSecret: string, fivaldiPartner: string) => Fivaldi;
+export declare const getClient: () => Fivaldi;
+export declare class Fivaldi {
     clientIdentifier: string;
     clientSecret: string;
     fivaldiPartner: string;
