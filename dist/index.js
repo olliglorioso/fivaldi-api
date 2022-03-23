@@ -45,7 +45,7 @@ class Fivaldi {
     constructor(clientIdentifier, clientSecret, fivaldiPartner) {
         this.request = (config) => __awaiter(this, void 0, void 0, function* () {
             const baseUrl = "https://api.fivaldi.net";
-            const { body, method, uri } = config;
+            const { body, method, uri, query } = config;
             let bodyMD5 = "";
             let contentType = "";
             const timestamp = Math.floor(new Date().getTime() / 1000).toString();
@@ -58,7 +58,7 @@ class Fivaldi {
                 contentType = "application/json";
                 headers.push({ key: "Content-Type", value: contentType });
             }
-            const mac = hmac([
+            let stringToSign = [
                 method || "GET",
                 bodyMD5,
                 contentType,
@@ -67,11 +67,15 @@ class Fivaldi {
                 }).filter(header => header.key.startsWith("X-Fivaldi"))
                     .map(header => `${header.key.trim().toLowerCase()}:${typeof header.value === "string" ? header.value.trim() : header.value}`),
                 uri
-            ].join(LF), this.clientSecret);
+            ].join(LF);
+            if (query) {
+                stringToSign += LF + query;
+            }
+            const mac = hmac(stringToSign, this.clientSecret);
             headers.push({ key: "Authorization", value: `Fivaldi ${mac}` });
             return yield (0, axios_1.default)({
                 method,
-                url: baseUrl + uri,
+                url: baseUrl + uri + query,
                 headers: headers.reduce((result, header) => {
                     result[header.key] = header.value;
                     return result;

@@ -10,6 +10,7 @@ export declare class Fivaldi {
         method: Method;
         body?: any;
         uri?: string;
+        query?: string;
     }) => Promise<any>;
     createInvoice(body: any): Promise<any>;
     createMultipleInvoices(body: any): Promise<any>;
