@@ -45,9 +45,10 @@ class Fivaldi {
     constructor(clientIdentifier, clientSecret, fivaldiPartner) {
         this.request = (config) => __awaiter(this, void 0, void 0, function* () {
             const baseUrl = "https://api.fivaldi.net";
-            const { body, method, uri, query } = config;
+            const { body, method, uri } = config;
             let bodyMD5 = "";
             let contentType = "";
+            const query = config.query || "";
             const timestamp = Math.floor(new Date().getTime() / 1000).toString();
             let headers = [
                 { key: "X-Fivaldi-Partner", value: this.fivaldiPartner },

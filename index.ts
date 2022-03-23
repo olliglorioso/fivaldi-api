@@ -49,9 +49,10 @@ export class Fivaldi {
     query?: string
   }): Promise<any> => {
     const baseUrl = "https://api.fivaldi.net"
-    const { body, method, uri, query } = config;
+    const { body, method, uri } = config;
     let bodyMD5 = ""
     let contentType = ""
+    const query = config.query || ""
     const timestamp: string = Math.floor(new Date().getTime() / 1000).toString();
     let headers = [
         { key: "X-Fivaldi-Partner", value: this.fivaldiPartner},
