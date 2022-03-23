@@ -1,5 +1,6 @@
 import axios, { Method } from "axios"
 import crypto from "crypto"
+import { Invoice } from "./types";
 
 const LF = '\u000a';
 
@@ -102,7 +103,12 @@ export class Fivaldi {
     }
   }
 
-  async createInvoice(body: any): Promise<any> {
+  /**
+   * @param body 
+   * @description Create a signle new invoice.
+   * @example Fivaldi.createInvoice(body)
+   */
+  async createInvoice(body: Invoice): Promise<any> {
     return await this.request({
       body,
       method: "POST",
@@ -110,7 +116,12 @@ export class Fivaldi {
     });
   }
 
-  async createMultipleInvoices(body: any): Promise<any> {
+  /**
+   * @param body
+   * @description Create multiple new invoices.
+   * @example Fivaldi.createInvoices(body)
+   */
+  async createMultipleInvoices(body: Invoice): Promise<any> {
     return await this.request({
       body, 
       method: "POST",
@@ -118,6 +129,12 @@ export class Fivaldi {
     });
   }
 
+  /**
+   * 
+   * @param customerId 
+   * @description Get details of a single customer.
+   * @example Fivaldi.getCustomer(customerId)
+   */
   async getCustomerDetails(customerId: string): Promise<any> {
     return await this.request({
       method: "GET",
@@ -125,6 +142,10 @@ export class Fivaldi {
     });
   }
 
+  /**
+   * @description Get company's invoicing details and default values for different params.
+   * @example Fivaldi.getCompanyDetails()
+   */
   async getCompanyInvoicingDetails(): Promise<any> {
     return await this.request({
       method: "GET",
