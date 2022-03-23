@@ -2,7 +2,11 @@
   "name": "fivaldi-api",
   "version": "1.0.0",
   "description": "With this marvellous library you can connect easily to Visma Fivaldi API.",
-  "main": "index.ts",
+  "main": "dist/index.t´js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node index.ts"
