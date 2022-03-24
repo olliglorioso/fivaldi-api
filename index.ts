@@ -82,6 +82,7 @@ export class Fivaldi {
         stringToSign += LF + query;
       }
 
+      console.log("just a test")
       const mac = hmac(
         stringToSign,
         this.clientSecret
