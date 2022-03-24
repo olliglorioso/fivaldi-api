@@ -1,6 +1,6 @@
 {
   "name": "fivaldi-api",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "With this marvellous library you can connect easily to Visma Fivaldi API.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,14 +13,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/olliglorioso/fivaldi-api-js.git"
+    "url": "git+https://github.com/olliglorioso/fivaldi-api.git"
   },
   "author": "Olli Glorioso & Samu Toljamo",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/olliglorioso/fivaldi-api-js/issues"
+    "url": "https://github.com/olliglorioso/fivaldi-api/issues"
   },
-  "homepage": "https://github.com/olliglorioso/fivaldi-api-js#readme",
+  "homepage": "https://github.com/olliglorioso/fivaldi-api#readme",
   "devDependencies": {
     "@types/axios": "^0.14.0",
     "@types/node": "^17.0.22",
